@@ -6,7 +6,9 @@ import os
 
 from aiogram import Bot, Dispatcher, F, Router
 from aiogram.filters import Command
+from aiogram.fsm.context import FSMContext
 from aiogram.types import KeyboardButton, Message, ReplyKeyboardMarkup
+from settings import router as settings_router
 
 POSTING = "▶️ Постинг"
 AUTOREPLY = "▶️ Автоответ"
@@ -14,6 +16,7 @@ STATISTICS = "📊 Статистика"
 SETTINGS = "⚙️ Настройки"
 
 router = Router()
+router.include_router(settings_router)
 
 
 def main_menu() -> ReplyKeyboardMarkup:
@@ -29,7 +32,8 @@ def main_menu() -> ReplyKeyboardMarkup:
 
 
 @router.message(Command("start", "menu"))
-async def show_menu(message: Message) -> None:
+async def show_menu(message: Message, state: FSMContext) -> None:
+    await state.clear()
     await message.answer(
         "Threads Copilot\nВыберите действие в меню ниже.", reply_markup=main_menu()
     )
@@ -55,13 +59,6 @@ async def autoreply(message: Message) -> None:
 async def statistics(message: Message) -> None:
     await message.answer(
         "📊 Статистика\nЭтот раздел пока в разработке.", reply_markup=main_menu()
-    )
-
-
-@router.message(F.text == SETTINGS)
-async def settings(message: Message) -> None:
-    await message.answer(
-        "⚙️ Настройки\nЭтот раздел пока в разработке.", reply_markup=main_menu()
     )
 
 
