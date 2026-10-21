@@ -1,0 +1,2 @@
+aiogram==3.22.0
+asyncpg==0.30.0
